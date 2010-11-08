@@ -12,6 +12,11 @@ describe "filesystem storage" do
       object.should be_instance_of(Object)
       object.instance_variable_get(:@number).should == 5
       GOM::Object.id(object).should == "test_storage:object_1"
+
+      object = GOM::Storage.fetch "test_storage:object_2"
+      object.should be_instance_of(Object)
+      object.instance_variable_get(:@test).should == "test value"
+      GOM::Object.id(object).should == "test_storage:object_2"
     end
 
   end

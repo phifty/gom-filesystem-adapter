@@ -1,3 +1,4 @@
 
 test_storage:
   adapter: filesystem
+  directory: /home/phifty/projects/gom-filesystem/spec/acceptance/data
