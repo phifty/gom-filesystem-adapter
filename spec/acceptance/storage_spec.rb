@@ -12,11 +12,13 @@ describe "filesystem storage" do
       object.should be_instance_of(Object)
       object.instance_variable_get(:@number).should == 5
       GOM::Object.id(object).should == "test_storage:object_1"
+    end
 
-      object = GOM::Storage.fetch "test_storage:object_2"
-      object.should be_instance_of(Object)
-      object.instance_variable_get(:@test).should == "test value"
-      GOM::Object.id(object).should == "test_storage:object_2"
+    it "should return proxy objects that fetches the related objects" do
+      object = GOM::Storage.fetch "test_storage:object_1"
+      related_object = object.instance_variable_get :@related_object
+      related_object.should be_instance_of(GOM::Object::Proxy)
+      related_object.object.instance_variable_get(:@test).should == "test value"
     end
 
   end

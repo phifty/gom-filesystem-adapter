@@ -1,6 +1,7 @@
 
 object_1:
   number: 5
+  related_object_id: test_storage:object_2
 
 object_2:
   test: test value

@@ -22,9 +22,13 @@ describe GOM::Storage::Filesystem::Loader do
       @filenames = [ @filename ]
       Dir.stub!(:[]).and_return(@filenames)
 
+      @proxy = Object.new
+      GOM::Object::Proxy.stub!(:new).and_return(@proxy)
+
       @file_hash = {
         "object_1" => {
-          "test" => "test value"
+          "test" => "test value",
+          "related_object_id" => "test_storage:object_2"
         },
         "object_2" => {
           "test" => "another test value"
@@ -43,12 +47,18 @@ describe GOM::Storage::Filesystem::Loader do
       @loader.perform
     end
 
+    it "should create object proxies for properties with '_id' suffixes" do
+      GOM::Object::Proxy.should_receive(:new).with(GOM::Object::Id.new("test_storage:object_2")).and_return(@proxy)
+      @loader.perform
+    end
+
     it "should convert the file hash into object hashes" do
       @loader.perform
       @loader.data.should == {
         "object_1" => {
           :class => "Object",
-          :properties => { "test" => "test value" }
+          :properties => { "test" => "test value" },
+          :relations => { "related_object" => @proxy }
         },
         "object_2" => {
           :class => "Object",
