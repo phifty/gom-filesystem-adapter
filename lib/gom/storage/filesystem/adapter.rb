@@ -10,7 +10,6 @@ module GOM
 
         def initialize(configuration)
           super configuration
-          @loader = GOM::Storage::Filesystem::Loader.new self.configuration[:directory]
         end
 
         def fetch(id)
@@ -29,8 +28,9 @@ module GOM
         private
 
         def load_data
-          @loader.perform
-          @data = @loader.data
+          loader = GOM::Storage::Filesystem::Loader.new self.configuration[:directory], self.configuration[:relation_detector]
+          loader.perform
+          @data = loader.data
         end
 
         def no_write_permission(method_name)

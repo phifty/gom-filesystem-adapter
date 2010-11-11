@@ -13,6 +13,10 @@ describe GOM::Storage::Filesystem::Loader do
       @loader.directory.should == @directory
     end
 
+    it "should set the relation detector" do
+      @loader.relation_detector.should == "_id$"
+    end
+
   end
 
   describe "perform" do
@@ -59,6 +63,25 @@ describe GOM::Storage::Filesystem::Loader do
           :class => "Object",
           :properties => { "test" => "test value" },
           :relations => { "related_object" => @proxy }
+        },
+        "object_2" => {
+          :class => "Object",
+          :properties => { "test" => "another test value" }
+        }
+      }
+    end
+
+    it "should be able to use a different relation detector to detect relations" do
+      @loader.relation_detector = "_object$"
+      @file_hash["object_1"].delete "related_object_id"
+      @file_hash["object_1"]["related_object"] = "test_storage:object_2"
+
+      @loader.perform
+      @loader.data.should == {
+        "object_1" => {
+          :class => "Object",
+          :properties => { "test" => "test value" },
+          :relations => { "related" => @proxy }
         },
         "object_2" => {
           :class => "Object",

@@ -20,7 +20,8 @@ describe GOM::Storage::Filesystem::Adapter do
     GOM::Storage::Filesystem::Loader.stub!(:new).and_return(@loader)
 
     @configuration = Object.new
-    @configuration.stub!(:[])
+    @configuration.stub!(:[]).with(:directory).and_return("test_directory")
+    @configuration.stub!(:[]).with(:relation_detector).and_return("test_relation_detector")
     @adapter = GOM::Storage::Filesystem::Adapter.new @configuration
   end
 
@@ -29,6 +30,11 @@ describe GOM::Storage::Filesystem::Adapter do
   end
 
   describe "fetch" do
+
+    it "should initialize the loader correctly" do
+      GOM::Storage::Filesystem::Loader.should_receive(:new).with("test_directory", "test_relation_detector").and_return(@loader)
+      @adapter.fetch "object_1"
+    end
 
     it "should load the data" do
       @loader.should_receive(:perform)

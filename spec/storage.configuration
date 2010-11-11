@@ -1,4 +1,5 @@
 
 test_storage:
-  adapter: filesystem
-  directory: /home/phifty/projects/gom-filesystem/spec/acceptance/data
+  adapter:           filesystem
+  directory:         /home/phifty/projects/gom-filesystem/spec/acceptance/data
+  relation_detector: _id$
