@@ -49,20 +49,20 @@ describe GOM::Storage::Filesystem::Adapter do
 
   describe "store" do
 
-    it "should raise a GOM::Storage::NoWritePermissionError" do
+    it "should raise a GOM::Storage::ReadOnlyError" do
       lambda do
         @adapter.store Object.new, "test_storage"
-      end.should raise_error(GOM::Storage::NoWritePermissionError)
+      end.should raise_error(GOM::Storage::ReadOnlyError)
     end
 
   end
 
   describe "remove" do
 
-    it "should raise a GOM::Storage::NoWritePermissionError" do
+    it "should raise a GOM::Storage::ReadOnlyError" do
       lambda do
         @adapter.remove Object.new
-      end.should raise_error(GOM::Storage::NoWritePermissionError)
+      end.should raise_error(GOM::Storage::ReadOnlyError)
     end
 
   end

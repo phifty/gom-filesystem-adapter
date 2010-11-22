@@ -18,11 +18,11 @@ module GOM
         end
 
         def store(object, storage_name = nil)
-          no_write_permission "store"
+          read_only_error "store"
         end
 
         def remove(object)
-          no_write_permission "remove"
+          read_only_error "remove"
         end
 
         private
@@ -33,8 +33,8 @@ module GOM
           @data = loader.data
         end
 
-        def no_write_permission(method_name)
-          raise GOM::Storage::NoWritePermissionError, "The adapter doesn't provide write methods"
+        def read_only_error(method_name)
+          raise GOM::Storage::ReadOnlyError, "The adapter doesn't provide write methods"
         end
 
       end
