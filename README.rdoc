@@ -1,6 +1,42 @@
 
-= General Object Mapper
+= General Object Mapper - Filesystem adapter
+
+The filesystem adapter for the GOM provides an easy way to store object data in the filesystem. Currently the adapter
+is read-only. The object data - stored in YML files - can be mapped to object, but no objects can be written to disk.
+
+== Configuration
+
+If the adapter <tt>filesystem</tt> is chosen in the storage configuration, the following configuration values should
+specified.
+
+* <tt>directory</tt> - specifies to directory where the object data is placed in.
+* <tt>relation_detector</tt> - Is optional and specifies a regular expression that is used to detect a key that holds
+  a reference to another object. The default is "_id$".
+
+=== Example
+
+  storage_name:
+    adapter: filesystem
+    directory: /var/project-name/data
+    relation_detector: ^.+_id$
+
+== Files
+
+The adapter reads all the *.yml files in the specified directory. The basename of the file defines the class of the
+containing objects. A file can store multiple object of that class and is structured the following way.
+
+  # file Book.yml
+  book_id_1:
+    pages: 1253
+    author_id: author_id_1
+
+A fetch of that book would look like:
+
+  book = GOM::Storage.fetch "storage_name:book_id_1"
+
+The fetched object would have the instance variable <tt>@pages</tt> set to <tt>1253</tt> and <tt>@author</tt> would
+point to an object of the class <tt>Author</tt> with the id <tt>author_id_1</tt>.
 
 == Development
 
-GOM is still in an early phase of development. Any bug report and contribution is welcome!
+GOM is still under development. Any bug report and contribution is welcome!
