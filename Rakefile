@@ -8,13 +8,13 @@ require 'rspec/core/rake_task'
 task :default => :spec
 
 specification = Gem::Specification.new do |specification|
-  specification.name              = "gom-filesystem"
+  specification.name              = "gom-filesystem-adapter"
   specification.version           = "0.1.0"
   specification.date              = "2010-11-22"
 
   specification.authors           = [ "Philipp Bruell" ]
   specification.email             = "b.phifty@gmail.com"
-  specification.homepage          = "http://github.com/phifty/gom-filesystem"
+  specification.homepage          = "http://github.com/phifty/gom-filesystem-adapter"
   specification.rubyforge_project = "gom-filesystem"
 
   specification.summary           = "Filesystem storage adapter for the General Object Mapper."
