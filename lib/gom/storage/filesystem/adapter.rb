@@ -28,7 +28,8 @@ module GOM
         private
 
         def load_data
-          loader = GOM::Storage::Filesystem::Loader.new self.configuration[:directory], self.configuration[:relation_detector]
+          directory, relation_detector = configuration.values_at :directory, :relation_detector
+          loader = GOM::Storage::Filesystem::Loader.new directory, relation_detector
           loader.perform
           @data = loader.data
         end

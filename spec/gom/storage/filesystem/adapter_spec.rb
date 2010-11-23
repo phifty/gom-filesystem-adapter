@@ -14,14 +14,15 @@ describe GOM::Storage::Filesystem::Adapter do
       }
     }
 
-    @loader = Object.new
-    @loader.stub!(:perform)
-    @loader.stub!(:data).and_return(@data)
-    GOM::Storage::Filesystem::Loader.stub!(:new).and_return(@loader)
+    @loader = mock GOM::Storage::Filesystem::Loader, :perform => nil, :data => @data
+    GOM::Storage::Filesystem::Loader.stub(:new).and_return(@loader)
 
-    @configuration = Object.new
-    @configuration.stub!(:[]).with(:directory).and_return("test_directory")
-    @configuration.stub!(:[]).with(:relation_detector).and_return("test_relation_detector")
+    @configuration = mock GOM::Storage::Configuration
+    @configuration.stub(:values_at) do |*arguments|
+      result = nil
+      result = [ "test_directory", "test_relation_detector" ] if arguments == [ :directory, :relation_detector ]
+      result
+    end
     @adapter = GOM::Storage::Filesystem::Adapter.new @configuration
   end
 
