@@ -1,8 +1,9 @@
 
-= General Object Mapper - Filesystem adapter
+= Generic Object Mapper - Filesystem adapter
 
-The filesystem adapter for the GOM provides an easy way to store object data in the filesystem. Currently the adapter
-is read-only. The object data - stored in YML files - can be mapped to object, but no objects can be written to disk.
+The filesystem adapter for the Generic Object Mapper (http://github.com/phifty/gom) provides an easy way to store
+object data in the filesystem. Currently the adapter is read-only. The object data - stored in YML files - can be
+mapped to object, but no object data can be written to disk.
 
 == Configuration
 
@@ -39,4 +40,4 @@ point to an object of the class <tt>Author</tt> with the id <tt>author_id_1</tt>
 
 == Development
 
-GOM is still under development. Any bug report and contribution is welcome!
+This project is still experimental and under development. Any bug report and contribution is welcome!
