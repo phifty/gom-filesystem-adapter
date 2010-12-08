@@ -13,10 +13,6 @@ describe GOM::Storage::Filesystem::Loader do
       @loader.directory.should == @directory
     end
 
-    it "should set the relation detector" do
-      @loader.relation_detector.should == "_id$"
-    end
-
   end
 
   describe "data" do
@@ -31,11 +27,17 @@ describe GOM::Storage::Filesystem::Loader do
 
       @file_hash = {
         "object_1" => {
-          "test" => "test value",
-          "related_object_id" => "test_storage:object_2"
+          "properties" => {
+            "test" => "test value"
+          },
+          "relations" => {
+            "related_object" => "test_storage:object_2"
+          }
         },
         "object_2" => {
-          "test" => "another test value"
+          "properties" => {
+            "test" => "another test value"
+          }
         }
       }
       YAML.stub(:load_file).and_return(@file_hash)
@@ -51,7 +53,7 @@ describe GOM::Storage::Filesystem::Loader do
       @loader.data
     end
 
-    it "should create object proxies for properties with '_id' suffixes" do
+    it "should create object proxies for relations" do
       GOM::Object::Proxy.should_receive(:new).with(GOM::Object::Id.new("test_storage:object_2")).and_return(@proxy)
       @loader.data
     end
@@ -62,24 +64,6 @@ describe GOM::Storage::Filesystem::Loader do
           :class => "Object",
           :properties => { "test" => "test value" },
           :relations => { "related_object" => @proxy }
-        },
-        "object_2" => {
-          :class => "Object",
-          :properties => { "test" => "another test value" }
-        }
-      }
-    end
-
-    it "should be able to use a different relation detector to detect relations" do
-      @loader.relation_detector = "_object$"
-      @file_hash["object_1"].delete "related_object_id"
-      @file_hash["object_1"]["related_object"] = "test_storage:object_2"
-
-      @loader.data.should == {
-        "object_1" => {
-          :class => "Object",
-          :properties => { "test" => "test value" },
-          :relations => { "related" => @proxy }
         },
         "object_2" => {
           :class => "Object",

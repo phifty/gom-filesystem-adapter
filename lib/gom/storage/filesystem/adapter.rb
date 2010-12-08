@@ -31,8 +31,7 @@ module GOM
         private
 
         def load_data
-          directory, relation_detector = configuration.values_at :directory, :relation_detector
-          @data = GOM::Storage::Filesystem::Loader.new(directory, relation_detector).data
+          @data = GOM::Storage::Filesystem::Loader.new(configuration[:directory]).data
         end
 
         def read_only_error(method_name)

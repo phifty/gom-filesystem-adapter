@@ -10,10 +10,9 @@ module GOM
       class Loader
 
         attr_accessor :directory
-        attr_accessor :relation_detector
 
-        def initialize(directory, relation_detector = "_id$")
-          @directory, @relation_detector = directory, relation_detector
+        def initialize(directory)
+          @directory = directory
           @data = { }
         end
 
@@ -38,7 +37,7 @@ module GOM
 
         def load_file_hash(classname, file_hash)
           file_hash.each do |id, hash|
-            @data[id] = Builder.new(classname, hash, @relation_detector).object_hash
+            @data[id] = Builder.new(classname, hash).object_hash
           end
         end
 
@@ -47,8 +46,8 @@ module GOM
 
           attr_reader :object_hash
 
-          def initialize(classname, hash, relation_detector)
-            @classname, @hash, @relation_detector = classname, hash, Regexp.new(relation_detector)
+          def initialize(classname, hash)
+            @classname, @hash = classname, hash
             @object_hash = { }
             copy_classname
             copy_properties
@@ -63,23 +62,18 @@ module GOM
 
           def copy_properties
             properties = { }
-            @hash.keys.select{ |key| !relation?(key) }.each do |key|
-              properties[key] = @hash[key]
+            (@hash["properties"] || { }).each do |key, value|
+              properties[key] = value
             end
             @object_hash[:properties] = properties unless properties.empty?
           end
 
           def copy_relations
             relations = { }
-            @hash.keys.select{ |key| relation?(key) }.each do |key|
-              name = key.sub @relation_detector, ""
-              relations[name] = GOM::Object::Proxy.new GOM::Object::Id.new(@hash[key])
+            (@hash["relations"] || { }).each do |key, value|
+              relations[key] = GOM::Object::Proxy.new GOM::Object::Id.new(value)
             end
             @object_hash[:relations] = relations unless relations.empty?
-          end
-
-          def relation?(key)
-            @relation_detector.match key
           end
 
         end
