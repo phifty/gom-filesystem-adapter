@@ -14,7 +14,7 @@ describe GOM::Storage::Filesystem::Adapter do
       }
     }
 
-    @loader = mock GOM::Storage::Filesystem::Loader, :perform => nil, :data => @data
+    @loader = mock GOM::Storage::Filesystem::Loader, :data => @data
     GOM::Storage::Filesystem::Loader.stub(:new).and_return(@loader)
 
     @configuration = mock GOM::Storage::Configuration
@@ -23,23 +23,31 @@ describe GOM::Storage::Filesystem::Adapter do
       result = [ "test_directory", "test_relation_detector" ] if arguments == [ :directory, :relation_detector ]
       result
     end
-    @adapter = GOM::Storage::Filesystem::Adapter.new @configuration
+    @adapter = described_class.new @configuration
   end
 
   it "should register the adapter" do
     GOM::Storage::Adapter[:filesystem].should == GOM::Storage::Filesystem::Adapter
   end
 
-  describe "fetch" do
+  describe "setup" do
 
-    it "should initialize the loader correctly" do
+    it "should initialize a file system loader" do
       GOM::Storage::Filesystem::Loader.should_receive(:new).with("test_directory", "test_relation_detector").and_return(@loader)
-      @adapter.fetch "object_1"
+      @adapter.setup
     end
 
     it "should load the data" do
-      @loader.should_receive(:perform)
-      @adapter.fetch "object_1"
+      @loader.should_receive(:data).and_return(@data)
+      @adapter.setup
+    end
+
+  end
+
+  describe "fetch" do
+
+    before :each do
+      @adapter.setup
     end
 
     it "should return the object hash" do

@@ -12,8 +12,11 @@ module GOM
           super configuration
         end
 
-        def fetch(id)
+        def setup
           load_data
+        end
+
+        def fetch(id)
           @data[id]
         end
 
@@ -29,9 +32,7 @@ module GOM
 
         def load_data
           directory, relation_detector = configuration.values_at :directory, :relation_detector
-          loader = GOM::Storage::Filesystem::Loader.new directory, relation_detector
-          loader.perform
-          @data = loader.data
+          @data = GOM::Storage::Filesystem::Loader.new(directory, relation_detector).data
         end
 
         def read_only_error(method_name)

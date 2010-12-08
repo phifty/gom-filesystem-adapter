@@ -11,15 +11,15 @@ module GOM
 
         attr_accessor :directory
         attr_accessor :relation_detector
-        attr_reader :data
 
         def initialize(directory, relation_detector = "_id$")
           @directory, @relation_detector = directory, relation_detector
           @data = { }
         end
 
-        def perform
+        def data
           load_yml_files
+          @data
         end
 
         private

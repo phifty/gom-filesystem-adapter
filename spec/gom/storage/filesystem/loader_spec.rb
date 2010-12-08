@@ -19,15 +19,15 @@ describe GOM::Storage::Filesystem::Loader do
 
   end
 
-  describe "perform" do
+  describe "data" do
 
     before :each do
       @filename = "directory/Object.yml"
       @filenames = [ @filename ]
-      Dir.stub!(:[]).and_return(@filenames)
+      Dir.stub(:[]).and_return(@filenames)
 
-      @proxy = Object.new
-      GOM::Object::Proxy.stub!(:new).and_return(@proxy)
+      @proxy = mock GOM::Object::Proxy
+      GOM::Object::Proxy.stub(:new).and_return(@proxy)
 
       @file_hash = {
         "object_1" => {
@@ -38,26 +38,25 @@ describe GOM::Storage::Filesystem::Loader do
           "test" => "another test value"
         }
       }
-      YAML.stub!(:load_file).and_return(@file_hash)
+      YAML.stub(:load_file).and_return(@file_hash)
     end
 
     it "should searches all .yml file in the directory" do
       Dir.should_receive(:[]).with("directory/*.yml").and_return(@filenames)
-      @loader.perform
+      @loader.data
     end
 
     it "should load the files" do
       YAML.should_receive(:load_file).with(@filename).and_return(@file_hash)
-      @loader.perform
+      @loader.data
     end
 
     it "should create object proxies for properties with '_id' suffixes" do
       GOM::Object::Proxy.should_receive(:new).with(GOM::Object::Id.new("test_storage:object_2")).and_return(@proxy)
-      @loader.perform
+      @loader.data
     end
 
     it "should convert the file hash into object hashes" do
-      @loader.perform
       @loader.data.should == {
         "object_1" => {
           :class => "Object",
@@ -76,7 +75,6 @@ describe GOM::Storage::Filesystem::Loader do
       @file_hash["object_1"].delete "related_object_id"
       @file_hash["object_1"]["related_object"] = "test_storage:object_2"
 
-      @loader.perform
       @loader.data.should == {
         "object_1" => {
           :class => "Object",
