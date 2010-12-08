@@ -11,15 +11,12 @@ If the adapter <tt>filesystem</tt> is chosen in the storage configuration, the f
 specified.
 
 * <tt>directory</tt> - specifies to directory where the object data is placed in.
-* <tt>relation_detector</tt> - Is optional and specifies a regular expression that is used to detect a key that holds
-  a reference to another object. The default is "_id$".
 
 === Example
 
   storage_name:
     adapter: filesystem
     directory: /var/project-name/data
-    relation_detector: ^.+_id$
 
 == Files
 
@@ -27,17 +24,27 @@ The adapter reads all the *.yml files in the specified directory. The basename o
 containing objects. A file can store multiple object of that class and is structured the following way.
 
   # file Book.yml
-  book_id_1:
-    pages: 1253
-    author_id: author_id_1
+  book_1:
+    properties:
+      pages: 1253
+    relations:
+      author: author_1
+
+  # file Author.yml
+  author_1:
+    properties:
+      name: "Mr. Storyteller"
 
 A fetch of that book would look like:
 
-  book = GOM::Storage.fetch "storage_name:book_id_1"
+  book = GOM::Storage.fetch "storage_name:book_1"
 
 The fetched object would have the instance variable <tt>@pages</tt> set to <tt>1253</tt> and <tt>@author</tt> would
-point to an object of the class <tt>Author</tt> with the id <tt>author_id_1</tt>.
+point to an object of the class <tt>Author</tt> with the id <tt>author_1</tt>.
 
 == Development
+
+Development has been done test-driven and the code follows at most the Clean Code paradigms. Code smells has been
+removed by using the reek[http://github.com/kevinrutherford/reek] code smell detector.
 
 This project is still experimental and under development. Any bug report and contribution is welcome!
