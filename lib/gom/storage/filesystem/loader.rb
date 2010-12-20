@@ -13,18 +13,17 @@ module GOM
 
         def initialize(directory)
           @directory = directory
-          @data = { }
         end
 
-        def data
+        def drafts
+          @drafts = { }
           load_yml_files
-          @data
+          @drafts
         end
 
         private
 
         def load_yml_files
-          @data = { }
           Dir[File.join(@directory, "*.yml")].each do |filename|
             load_yml_file filename
           end
@@ -37,43 +36,45 @@ module GOM
 
         def load_file_hash(classname, file_hash)
           file_hash.each do |id, hash|
-            @data[id] = Builder.new(classname, hash).object_hash
+            @drafts[id] = Builder.new(classname, hash).draft
           end
         end
 
-        # Builds an object hash out of the file hashes.
+        # Builds a draft out of the file hashes.
         class Builder
 
-          attr_reader :object_hash
+          def initialize(class_name, hash)
+            @class_name, @hash = class_name, hash
+          end
 
-          def initialize(classname, hash)
-            @classname, @hash = classname, hash
-            @object_hash = { }
-            copy_classname
-            copy_properties
-            copy_relations
+          def draft
+            @draft = GOM::Object::Draft.new
+            set_class_name
+            set_properties
+            set_relations
+            @draft
           end
 
           private
 
-          def copy_classname
-            @object_hash[:class] = @classname
+          def set_class_name
+            @draft.class_name = @class_name
           end
 
-          def copy_properties
+          def set_properties
             properties = { }
             (@hash["properties"] || { }).each do |key, value|
               properties[key] = value
             end
-            @object_hash[:properties] = properties unless properties.empty?
+            @draft.properties = properties unless properties.empty?
           end
 
-          def copy_relations
+          def set_relations
             relations = { }
             (@hash["relations"] || { }).each do |key, value|
               relations[key] = GOM::Object::Proxy.new GOM::Object::Id.new(value)
             end
-            @object_hash[:relations] = relations unless relations.empty?
+            @draft.relations = relations unless relations.empty?
           end
 
         end

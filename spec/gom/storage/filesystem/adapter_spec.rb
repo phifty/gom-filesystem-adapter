@@ -3,18 +3,10 @@ require File.expand_path(File.join(File.dirname(__FILE__), "..", "..", "..", "sp
 describe GOM::Storage::Filesystem::Adapter do
 
   before :each do
-    @data = {
-      "object_1" => {
-        :class => "Object",
-        :properties => { :test => "test value" }
-      },
-      "object_2" => {
-        :class => "Object",
-        :properties => { :test => "another test value" }
-      }
-    }
+    @draft = mock GOM::Object::Draft
+    @drafts = { "object_1" => @draft }
 
-    @loader = mock GOM::Storage::Filesystem::Loader, :data => @data
+    @loader = mock GOM::Storage::Filesystem::Loader, :drafts => @drafts
     GOM::Storage::Filesystem::Loader.stub(:new).and_return(@loader)
 
     @configuration = mock GOM::Storage::Configuration
@@ -34,7 +26,7 @@ describe GOM::Storage::Filesystem::Adapter do
     end
 
     it "should load the data" do
-      @loader.should_receive(:data).and_return(@data)
+      @loader.should_receive(:drafts).and_return(@drafts)
       @adapter.setup
     end
 
@@ -47,7 +39,7 @@ describe GOM::Storage::Filesystem::Adapter do
     end
 
     it "should return the object hash" do
-      @adapter.fetch("object_1").should == @data["object_1"]
+      @adapter.fetch("object_1").should == @draft
     end
 
   end

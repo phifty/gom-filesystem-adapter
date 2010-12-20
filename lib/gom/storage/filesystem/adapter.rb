@@ -13,11 +13,11 @@ module GOM
         end
 
         def setup
-          load_data
+          load_drafts
         end
 
         def fetch(id)
-          @data[id]
+          @drafts[id]
         end
 
         def store(object, storage_name = nil)
@@ -30,8 +30,8 @@ module GOM
 
         private
 
-        def load_data
-          @data = GOM::Storage::Filesystem::Loader.new(configuration[:directory]).data
+        def load_drafts
+          @drafts = GOM::Storage::Filesystem::Loader.new(configuration[:directory]).drafts
         end
 
         def read_only_error(method_name)

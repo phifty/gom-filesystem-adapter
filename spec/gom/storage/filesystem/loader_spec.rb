@@ -15,7 +15,7 @@ describe GOM::Storage::Filesystem::Loader do
 
   end
 
-  describe "data" do
+  describe "drafts" do
 
     before :each do
       @filename = "directory/Object.yml"
@@ -45,31 +45,28 @@ describe GOM::Storage::Filesystem::Loader do
 
     it "should searches all .yml file in the directory" do
       Dir.should_receive(:[]).with("directory/*.yml").and_return(@filenames)
-      @loader.data
+      @loader.drafts
     end
 
     it "should load the files" do
       YAML.should_receive(:load_file).with(@filename).and_return(@file_hash)
-      @loader.data
+      @loader.drafts
     end
 
     it "should create object proxies for relations" do
       GOM::Object::Proxy.should_receive(:new).with(GOM::Object::Id.new("test_storage:object_2")).and_return(@proxy)
-      @loader.data
+      @loader.drafts
     end
 
-    it "should convert the file hash into object hashes" do
-      @loader.data.should == {
-        "object_1" => {
-          :class => "Object",
-          :properties => { "test" => "test value" },
-          :relations => { "related_object" => @proxy }
-        },
-        "object_2" => {
-          :class => "Object",
-          :properties => { "test" => "another test value" }
-        }
-      }
+    it "should convert the file hash into drafts" do
+      draft_one = @loader.drafts["object_1"]
+      draft_one.class_name.should == "Object"
+      draft_one.properties.should == { "test" => "test value" }
+      draft_one.relations.should == { "related_object" => @proxy }
+
+      draft_two = @loader.drafts["object_2"]
+      draft_two.class_name.should == "Object"
+      draft_two.properties.should == { "test" => "another test value" }
     end
 
   end
