@@ -42,6 +42,10 @@ A fetch of that book would look like:
 The fetched object would have the instance variable <tt>@pages</tt> set to <tt>1253</tt> and <tt>@author</tt> would
 point to an object of the class <tt>Author</tt> with the id <tt>author_1</tt>.
 
+== Views
+
+This adapter currently supports class views. For documentation see http://github.com/phifty/gom.
+
 == Development
 
 Development has been done test-driven and the code follows at most the Clean Code paradigms. Code smells has been
