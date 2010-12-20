@@ -8,10 +8,6 @@ module GOM
       # The filesystem storage adapter
       class Adapter < GOM::Storage::Adapter
 
-        def initialize(configuration)
-          super configuration
-        end
-
         def setup
           load_drafts
         end
@@ -20,12 +16,19 @@ module GOM
           @drafts[id]
         end
 
-        def store(object, storage_name = nil)
-          read_only_error "store"
+        def store(*arguments)
+          read_only_error
         end
 
-        def remove(object)
-          read_only_error "remove"
+        def remove(*arguments)
+          read_only_error
+        end
+
+        def collection(view_name, options = { })
+          view = configuration.views[view_name.to_sym]
+          raise ViewNotFoundError, "there are no view with the name #{view_name}" unless view
+          fetcher = Collection::Fetcher.new @drafts, view
+          GOM::Object::Collection.new fetcher
         end
 
         private
@@ -34,7 +37,7 @@ module GOM
           @drafts = GOM::Storage::Filesystem::Loader.new(configuration[:directory]).drafts
         end
 
-        def read_only_error(method_name)
+        def read_only_error
           raise GOM::Storage::ReadOnlyError, "The adapter doesn't provide write methods"
         end
 

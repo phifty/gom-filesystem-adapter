@@ -4,7 +4,7 @@ describe GOM::Storage::Filesystem::Adapter do
 
   before :each do
     @draft = mock GOM::Object::Draft
-    @drafts = { "object_1" => @draft }
+    @drafts = mock Hash, :[] => @draft
 
     @loader = mock GOM::Storage::Filesystem::Loader, :drafts => @drafts
     GOM::Storage::Filesystem::Loader.stub(:new).and_return(@loader)
@@ -60,6 +60,51 @@ describe GOM::Storage::Filesystem::Adapter do
       lambda do
         @adapter.remove Object.new
       end.should raise_error(GOM::Storage::ReadOnlyError)
+    end
+
+  end
+
+  describe "collection" do
+
+    before :each do
+      @adapter.setup
+
+      @view = mock GOM::Storage::Configuration::View::Class
+      @views = mock Hash, :[] => @view
+      @configuration.stub(:views).and_return(@views)
+
+      @fetcher = mock GOM::Storage::Filesystem::Collection::Fetcher
+      GOM::Storage::Filesystem::Collection::Fetcher.stub(:new).and_return(@fetcher)
+
+      @collection = mock GOM::Object::Collection
+      GOM::Object::Collection.stub(:new).and_return(@collection)
+    end
+
+    it "should select the right view" do
+      @views.should_receive(:[]).with(:test_object_class_view).and_return(@view)
+      @adapter.collection "test_object_class_view"
+    end
+
+    it "should raise a #{described_class::ViewNotFoundError} if view name if invalid" do
+      @views.stub(:[]).and_return(nil)
+      lambda do
+        @adapter.collection :test_object_class_view
+      end.should raise_error(described_class::ViewNotFoundError)
+    end
+
+    it "should initialize the collection fetcher" do
+      GOM::Storage::Filesystem::Collection::Fetcher.should_receive(:new).with(@drafts, @view).and_return(@fetcher)
+      @adapter.collection :test_object_class_view
+    end
+
+    it "should initialize the collection" do
+      GOM::Object::Collection.should_receive(:new).and_return(@collection)
+      @adapter.collection :test_object_class_view
+    end
+
+    it "should return the collection" do
+      collection = @adapter.collection :test_object_class_view
+      collection.should == @collection
     end
 
   end

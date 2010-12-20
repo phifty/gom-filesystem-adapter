@@ -1,5 +1,8 @@
 
 test_storage:
-  adapter:           filesystem
-  directory:         /home/phifty/projects/gom-filesystem-adapter/spec/acceptance/data
-  relation_detector: _id$
+  adapter:   filesystem
+  directory: /home/phifty/projects/gom-filesystem-adapter/spec/acceptance/data
+  views:
+    test_object_class_view:
+      type: class
+      class: Object
