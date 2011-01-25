@@ -1,7 +1,7 @@
 
 test_storage:
   adapter:   filesystem
-  directory: /home/phifty/projects/gom-filesystem-adapter/spec/acceptance/data
+  files: /home/phifty/projects/gom-filesystem-adapter/spec/acceptance/data/*.yml
   views:
     test_object_class_view:
       type: class

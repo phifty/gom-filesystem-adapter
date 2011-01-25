@@ -34,7 +34,7 @@ module GOM
         private
 
         def load_drafts
-          @drafts = GOM::Storage::Filesystem::Loader.new(configuration[:directory]).drafts
+          @drafts = GOM::Storage::Filesystem::Loader.new(configuration[:files]).drafts
         end
 
         def read_only_error

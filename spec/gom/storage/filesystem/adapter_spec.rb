@@ -10,7 +10,7 @@ describe GOM::Storage::Filesystem::Adapter do
     GOM::Storage::Filesystem::Loader.stub(:new).and_return(@loader)
 
     @configuration = mock GOM::Storage::Configuration
-    @configuration.stub(:[]).with(:directory).and_return("test_directory")
+    @configuration.stub(:[]).with(:files).and_return("test_files")
     @adapter = described_class.new @configuration
   end
 
@@ -21,7 +21,7 @@ describe GOM::Storage::Filesystem::Adapter do
   describe "setup" do
 
     it "should initialize a file system loader" do
-      GOM::Storage::Filesystem::Loader.should_receive(:new).with("test_directory").and_return(@loader)
+      GOM::Storage::Filesystem::Loader.should_receive(:new).with("test_files").and_return(@loader)
       @adapter.setup
     end
 

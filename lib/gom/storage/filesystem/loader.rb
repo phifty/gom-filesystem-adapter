@@ -9,10 +9,10 @@ module GOM
       # The loader for the filesystem data that is provided by the storage adapter.
       class Loader
 
-        attr_accessor :directory
+        attr_accessor :files
 
-        def initialize(directory)
-          @directory = directory
+        def initialize(files)
+          @files = files
         end
 
         def drafts
@@ -24,27 +24,26 @@ module GOM
         private
 
         def load_yml_files
-          Dir[File.join(@directory, "*.yml")].each do |filename|
+          Dir[@files].each do |filename|
             load_yml_file filename
           end
         end
 
         def load_yml_file(filename)
-          classname = File.basename(filename).sub(/\..*$/, "")
-          load_file_hash classname, YAML.load_file(filename)
+          load_file_hash YAML.load_file(filename)
         end
 
-        def load_file_hash(classname, file_hash)
+        def load_file_hash(file_hash)
           file_hash.each do |id, hash|
-            @drafts[id] = Builder.new(classname, hash).draft
+            @drafts[id] = Builder.new(hash).draft
           end
         end
 
         # Builds a draft out of the file hashes.
         class Builder
 
-          def initialize(class_name, hash)
-            @class_name, @hash = class_name, hash
+          def initialize(hash)
+            @hash = hash
           end
 
           def draft
@@ -58,7 +57,7 @@ module GOM
           private
 
           def set_class_name
-            @draft.class_name = @class_name
+            @draft.class_name = @hash["class"] || "Object"
           end
 
           def set_properties

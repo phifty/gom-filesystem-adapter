@@ -3,14 +3,14 @@ require File.expand_path(File.join(File.dirname(__FILE__), "..", "..", "..", "sp
 describe GOM::Storage::Filesystem::Loader do
 
   before :each do
-    @directory = "directory"
-    @loader = GOM::Storage::Filesystem::Loader.new @directory
+    @files = "files"
+    @loader = GOM::Storage::Filesystem::Loader.new @files
   end
 
   describe "initialize" do
 
     it "should set the directory" do
-      @loader.directory.should == @directory
+      @loader.files.should == @files
     end
 
   end
@@ -27,6 +27,7 @@ describe GOM::Storage::Filesystem::Loader do
 
       @file_hash = {
         "object_1" => {
+          "class" => "Test::Model",
           "properties" => {
             "test" => "test value"
           },
@@ -43,8 +44,8 @@ describe GOM::Storage::Filesystem::Loader do
       YAML.stub(:load_file).and_return(@file_hash)
     end
 
-    it "should searches all .yml file in the directory" do
-      Dir.should_receive(:[]).with("directory/*.yml").and_return(@filenames)
+    it "should searches all files that matches the pattern" do
+      Dir.should_receive(:[]).with("files").and_return(@filenames)
       @loader.drafts
     end
 
@@ -60,7 +61,7 @@ describe GOM::Storage::Filesystem::Loader do
 
     it "should convert the file hash into drafts" do
       draft_one = @loader.drafts["object_1"]
-      draft_one.class_name.should == "Object"
+      draft_one.class_name.should == "Test::Model"
       draft_one.properties.should == { "test" => "test value" }
       draft_one.relations.should == { "related_object" => @proxy }
 
