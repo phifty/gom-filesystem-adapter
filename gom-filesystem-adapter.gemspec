@@ -2,8 +2,8 @@
 
 Gem::Specification.new do |specification|
   specification.name              = "gom-filesystem-adapter"
-  specification.version           = "0.2.0"
-  specification.date              = "2010-12-20"
+  specification.version           = "0.3.0"
+  specification.date              = "2011-01-25"
 
   specification.authors           = [ "Philipp Brüll" ]
   specification.email             = "b.phifty@gmail.com"
