@@ -32,6 +32,20 @@ describe GOM::Storage::Filesystem::Adapter do
 
   end
 
+  describe "teardown" do
+
+    before :each do
+      @adapter.setup
+    end
+
+    it "should clear the loaded drafts" do
+      lambda do
+        @adapter.teardown
+      end.should change(@adapter, :drafts).from(@drafts).to(nil)
+    end
+
+  end
+
   describe "fetch" do
 
     before :each do
@@ -42,9 +56,20 @@ describe GOM::Storage::Filesystem::Adapter do
       @adapter.fetch("object_1").should == @draft
     end
 
+    it "should raise a #{GOM::Storage::Adapter::NoSetupError} if no drafts has been loaded" do
+      @adapter.teardown
+      lambda do
+        @adapter.fetch "object_1"
+      end.should raise_error(GOM::Storage::Adapter::NoSetupError)
+    end
+
   end
 
   describe "store" do
+
+    before :each do
+      @adapter.setup
+    end
 
     it "should raise a GOM::Storage::ReadOnlyError" do
       lambda do
@@ -52,14 +77,32 @@ describe GOM::Storage::Filesystem::Adapter do
       end.should raise_error(GOM::Storage::ReadOnlyError)
     end
 
+    it "should raise a #{GOM::Storage::Adapter::NoSetupError} if no drafts has been loaded" do
+      @adapter.teardown
+      lambda do
+        @adapter.store Object.new, "test_storage"
+      end.should raise_error(GOM::Storage::Adapter::NoSetupError)
+    end
+
   end
 
   describe "remove" do
+
+    before :each do
+      @adapter.setup
+    end
 
     it "should raise a GOM::Storage::ReadOnlyError" do
       lambda do
         @adapter.remove Object.new
       end.should raise_error(GOM::Storage::ReadOnlyError)
+    end
+
+    it "should raise a #{GOM::Storage::Adapter::NoSetupError} if no drafts has been loaded" do
+      @adapter.teardown
+      lambda do
+        @adapter.remove Object.new
+      end.should raise_error(GOM::Storage::Adapter::NoSetupError)
     end
 
   end
@@ -105,6 +148,13 @@ describe GOM::Storage::Filesystem::Adapter do
     it "should return the collection" do
       collection = @adapter.collection :test_object_class_view
       collection.should == @collection
+    end
+
+    it "should raise a #{GOM::Storage::Adapter::NoSetupError} if no drafts has been loaded" do
+      @adapter.teardown
+      lambda do
+        @adapter.collection :test_object_class_view
+      end.should raise_error(GOM::Storage::Adapter::NoSetupError)
     end
 
   end
