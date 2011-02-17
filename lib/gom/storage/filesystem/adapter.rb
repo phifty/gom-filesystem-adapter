@@ -1,64 +1,52 @@
 
-module GOM
+# The filesystem storage adapter
+class GOM::Storage::Filesystem::Adapter < GOM::Storage::Adapter
 
-  module Storage
+  attr_reader :drafts
 
-    module Filesystem
+  def setup
+    load_drafts
+  end
 
-      # The filesystem storage adapter
-      class Adapter < GOM::Storage::Adapter
+  def teardown
+    @drafts = nil
+  end
 
-        attr_reader :drafts
+  def fetch(id)
+    check_setup
+    @drafts[id]
+  end
 
-        def setup
-          load_drafts
-        end
+  def store(*arguments)
+    check_setup
+    read_only_error
+  end
 
-        def teardown
-          @drafts = nil
-        end
+  def remove(*arguments)
+    check_setup
+    read_only_error
+  end
 
-        def fetch(id)
-          check_setup
-          @drafts[id]
-        end
+  def collection(view_name, options = { })
+    check_setup
+    view = configuration.views[view_name.to_sym]
+    raise ViewNotFoundError, "there are no view with the name #{view_name}" unless view
+    fetcher = GOM::Storage::Filesystem::Collection::Fetcher.new @drafts, view
+    GOM::Object::Collection.new fetcher
+  end
 
-        def store(*arguments)
-          check_setup
-          read_only_error
-        end
+  private
 
-        def remove(*arguments)
-          check_setup
-          read_only_error
-        end
+  def check_setup
+    raise GOM::Storage::Adapter::NoSetupError unless @drafts
+  end
 
-        def collection(view_name, options = { })
-          check_setup
-          view = configuration.views[view_name.to_sym]
-          raise ViewNotFoundError, "there are no view with the name #{view_name}" unless view
-          fetcher = Collection::Fetcher.new @drafts, view
-          GOM::Object::Collection.new fetcher
-        end
+  def load_drafts
+    @drafts = GOM::Storage::Filesystem::Loader.new(configuration[:files]).drafts
+  end
 
-        private
-
-        def check_setup
-          raise GOM::Storage::Adapter::NoSetupError unless @drafts
-        end
-
-        def load_drafts
-          @drafts = GOM::Storage::Filesystem::Loader.new(configuration[:files]).drafts
-        end
-
-        def read_only_error
-          raise GOM::Storage::ReadOnlyError, "The adapter doesn't provide write methods"
-        end
-
-      end
-
-    end
-
+  def read_only_error
+    raise GOM::Storage::ReadOnlyError, "The adapter doesn't provide write methods"
   end
 
 end

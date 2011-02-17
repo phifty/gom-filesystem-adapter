@@ -1,18 +1,6 @@
 
-module GOM
+module GOM::Storage::Filesystem::Collection
 
-  module Storage
-
-    module Filesystem
-
-      module Collection
-
-        autoload :Fetcher, File.join(File.dirname(__FILE__), "collection", "fetcher")
-
-      end
-
-    end
-
-  end
+  autoload :Fetcher, File.join(File.dirname(__FILE__), "collection", "fetcher")
 
 end
