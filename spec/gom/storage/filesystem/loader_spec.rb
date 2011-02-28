@@ -61,11 +61,13 @@ describe GOM::Storage::Filesystem::Loader do
 
     it "should convert the file hash into drafts" do
       draft_one = @loader.drafts["object_1"]
+      draft_one.object_id.should == "object_1"
       draft_one.class_name.should == "Test::Model"
       draft_one.properties.should == { "test" => "test value" }
       draft_one.relations.should == { "related_object" => @proxy }
 
       draft_two = @loader.drafts["object_2"]
+      draft_two.object_id.should == "object_2"
       draft_two.class_name.should == "Object"
       draft_two.properties.should == { "test" => "another test value" }
     end

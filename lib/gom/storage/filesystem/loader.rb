@@ -28,20 +28,20 @@ class GOM::Storage::Filesystem::Loader
   end
 
   def load_file_hash(file_hash)
-    file_hash.each do |id, hash|
-      @drafts[id] = Builder.new(hash).draft
+    file_hash.each do |object_id, hash|
+      @drafts[object_id] = Builder.new(object_id, hash).draft
     end
   end
 
   # Builds a draft out of the file hashes.
   class Builder
 
-    def initialize(hash)
-      @hash = hash
+    def initialize(object_id, hash)
+      @object_id, @hash = object_id, hash
     end
 
     def draft
-      @draft = GOM::Object::Draft.new
+      initialize_draft
       set_class_name
       set_properties
       set_relations
@@ -49,6 +49,10 @@ class GOM::Storage::Filesystem::Loader
     end
 
     private
+
+    def initialize_draft
+      @draft = GOM::Object::Draft.new @object_id
+    end
 
     def set_class_name
       @draft.class_name = @hash["class"] || "Object"

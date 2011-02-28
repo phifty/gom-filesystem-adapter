@@ -9,7 +9,7 @@ describe GOM::Storage::Filesystem::Adapter do
     @loader = mock GOM::Storage::Filesystem::Loader, :drafts => @drafts
     GOM::Storage::Filesystem::Loader.stub(:new).and_return(@loader)
 
-    @configuration = mock GOM::Storage::Configuration
+    @configuration = mock GOM::Storage::Configuration, :name => "test_storage"
     @configuration.stub(:[]).with(:files).and_return("test_files")
     @adapter = described_class.new @configuration
   end

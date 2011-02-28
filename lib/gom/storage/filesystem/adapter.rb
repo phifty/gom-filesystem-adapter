@@ -29,10 +29,10 @@ class GOM::Storage::Filesystem::Adapter < GOM::Storage::Adapter
 
   def collection(view_name, options = { })
     check_setup
+    configuration = self.configuration
     view = configuration.views[view_name.to_sym]
     raise ViewNotFoundError, "there are no view with the name #{view_name}" unless view
-    fetcher = GOM::Storage::Filesystem::Collection::Fetcher.new @drafts, view
-    GOM::Object::Collection.new fetcher
+    GOM::Object::Collection.new GOM::Storage::Filesystem::Collection::Fetcher.new(@drafts, view), configuration.name
   end
 
   private
