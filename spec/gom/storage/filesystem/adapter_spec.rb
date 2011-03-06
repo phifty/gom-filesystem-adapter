@@ -4,7 +4,7 @@ describe GOM::Storage::Filesystem::Adapter do
 
   before :each do
     @draft = mock GOM::Object::Draft
-    @drafts = mock Hash, :[] => @draft
+    @drafts = mock Hash, :[] => @draft, :size => 1
 
     @loader = mock GOM::Storage::Filesystem::Loader, :drafts => @drafts
     GOM::Storage::Filesystem::Loader.stub(:new).and_return(@loader)
@@ -102,6 +102,25 @@ describe GOM::Storage::Filesystem::Adapter do
       @adapter.teardown
       lambda do
         @adapter.remove Object.new
+      end.should raise_error(GOM::Storage::Adapter::NoSetupError)
+    end
+
+  end
+
+  describe "count" do
+
+    before :each do
+      @adapter.setup
+    end
+
+    it "should return the object hash" do
+      @adapter.count.should == 1
+    end
+
+    it "should raise a #{GOM::Storage::Adapter::NoSetupError} if no drafts has been loaded" do
+      @adapter.teardown
+      lambda do
+        @adapter.count
       end.should raise_error(GOM::Storage::Adapter::NoSetupError)
     end
 

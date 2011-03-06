@@ -27,6 +27,11 @@ class GOM::Storage::Filesystem::Adapter < GOM::Storage::Adapter
     read_only_error
   end
 
+  def count
+    check_setup
+    @drafts.size
+  end
+
   def collection(view_name, options = { })
     check_setup
     configuration = self.configuration
