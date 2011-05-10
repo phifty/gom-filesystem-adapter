@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |specification|
   specification.name              = "gom-filesystem-adapter"
-  specification.version           = "0.3.1"
+  specification.version           = "0.4.0"
   specification.date              = "2011-03-07"
 
   specification.authors           = [ "Philipp Brüll" ]
@@ -20,7 +20,7 @@ Gem::Specification.new do |specification|
 
   specification.test_files        = Dir["spec/**/*_spec.rb"]
 
-  specification.add_dependency "gom", ">= 0.3.1"
+  specification.add_dependency "gom", ">= 0.4.0"
 
   specification.add_development_dependency "rspec", ">= 2"
   specification.add_development_dependency "reek", ">= 1.2"
