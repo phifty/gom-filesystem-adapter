@@ -1,5 +1,7 @@
+source :rubygems
 
-gem "gom", ">= 0.4.0"
+gem "rake", "0.9.0"
+gem "gom", ">= 0.4.1"
 
 group :development do
   gem "rspec", ">= 2"

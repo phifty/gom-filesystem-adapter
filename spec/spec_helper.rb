@@ -12,7 +12,7 @@ GOM::Storage.configure {
     files File.join(File.dirname(__FILE__), "acceptance", "data", "*.yml")
     view {
       name :test_object_class_view
-      type :class
+      kind :class
       model_class Object
     }
   }
