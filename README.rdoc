@@ -5,6 +5,8 @@ The filesystem adapter for the Generic Object Mapper (http://github.com/phifty/g
 object data in the filesystem. Currently the adapter is read-only. The object data - stored in YML files - can be
 mapped to object, but no object data can be written to disk.
 
+http://travis-ci.org/phifty/gom-filesystem-adapter.png
+
 == Configuration
 
 If the adapter <tt>filesystem</tt> is chosen in the storage configuration, the following configuration values should
