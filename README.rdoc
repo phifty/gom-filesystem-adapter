@@ -17,9 +17,11 @@ specified.
 === Example
 
   GOM::Storage.configure {
-    name :storage_name
-    adapter :filesystem
-    directory "/var/project-name/data"
+    storage {
+      name :storage_name
+      adapter :filesystem
+      directory "/var/project-name/data"
+    }
   }
 
 == Files
