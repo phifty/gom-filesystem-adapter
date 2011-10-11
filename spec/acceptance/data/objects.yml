@@ -1,12 +1,12 @@
 
 object_1:
-  class: GOM::Spec::Object
+  class: "GOM::Spec::Object"
   properties:
     number: 5
   relations:
-    related_object: test_storage:object_2
+    related_object: "test_storage:object_2"
 
 object_2:
-  class: GOM::Spec::Object
+  class: "GOM::Spec::Object"
   properties:
     number: 7

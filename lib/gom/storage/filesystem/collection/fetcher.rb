@@ -10,7 +10,11 @@ class GOM::Storage::Filesystem::Collection::Fetcher
   end
 
   def drafts
-    @drafts.values.select{ |draft| draft.class_name == @view.class_name }
+    if @view.is_a?(GOM::Storage::Configuration::View::All)
+      @drafts.values.select{ |draft| !draft.class_name.nil? }
+    else
+      @drafts.values.select{ |draft| draft.class_name == @view.class_name.to_s }
+    end
   end
 
 end
